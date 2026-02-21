@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { PatternIcon } from "@/components/faucet/PatternIcon";
+import { PatternIcon } from "@/components/PatternIcon";
 import { useReducedMotionPref } from "@/hooks/useReducedMotionPref";
-import { submitProofForValidation, generateProof } from "@/lib/prove";
+import { submitProofForValidation, generateProof } from "@/lib/zk/prove";
 /* ── Local types & helpers (decoupled from captchaModel) ── */
 
 type PatternType = "circle" | "triangle" | "plus" | "waves" | "stripes" | "star";
