@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import CaptchaModal from "@/components/CaptchaModal";
+import {CaptchaModal} from "@/components/CaptchaModal";
 
 export default function FaucetPage() {
   const [address, setAddress] = useState("");
@@ -56,7 +56,7 @@ export default function FaucetPage() {
         <CaptchaModal
           isOpen={showCaptcha}
           onClose={() => setShowCaptcha(false)}
-          onVerified={() => {
+          onVerifiedHuman={() => {
             setVerified(true);
             setShowCaptcha(false);
           }}

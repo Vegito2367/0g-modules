@@ -7,7 +7,19 @@ import { useReducedMotionPref } from "@/hooks/useReducedMotionPref";
 import { submitProofForValidation, generateProof } from "@/lib/zk/prove";
 /* ── Local types & helpers (decoupled from captchaModel) ── */
 
-type PatternType = "circle" | "triangle" | "plus" | "waves" | "stripes" | "star";
+export type PatternType = "circle" | "triangle" | "plus" | "waves" | "stripes" | "star";
+
+/* ── Proof loading overlay ── */
+
+function ProofLoadingOverlay({ message = "Generating proof…" }: { message?: string }) {
+  return (
+    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-[#1e1033]/95 backdrop-blur-sm">
+      {/* spinner */}
+      <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-white/20 border-t-purple-400" />
+      <p className="text-sm font-medium text-white/80">{message}</p>
+    </div>
+  );
+}
 type ExportedJson = { score: number };
 type Puzzle = {
   seed: number;
@@ -88,6 +100,7 @@ export function CaptchaModal({ isOpen, onClose, onVerifiedHuman }: Props) {
   const [incorrectTiles, setIncorrectTiles] = useState<Set<number>>(new Set());
   const [missedTiles, setMissedTiles] = useState<Set<number>>(new Set());
   const [verifyLoading, setVerifyLoading] = useState(false);
+  const [proofLoading, setProofLoading] = useState(false);
 
   const [botCursorPos, setBotCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [botCursorVisible, setBotCursorVisible] = useState(false);
@@ -183,10 +196,11 @@ export function CaptchaModal({ isOpen, onClose, onVerifiedHuman }: Props) {
     [handleTileClick],
   );
 
-  const handleVerify = useCallback(() => {
+  const handleVerify = useCallback(async () => {
     if (solved && verified) return;
     setVerifyLoading(true);
-    const timer = setTimeout(() => {
+
+    try {
       const fp = new Set([...selected].filter((i) => !puzzle.targetIndices.has(i)));
       const fn = new Set([...puzzle.targetIndices].filter((i) => !selected.has(i)));
       const correct = fp.size === 0 && fn.size === 0;
@@ -201,17 +215,27 @@ export function CaptchaModal({ isOpen, onClose, onVerifiedHuman }: Props) {
       setMissedTiles(new Set());
       setSolved(true);
       setVerified(true);
+
       if (simulateBot) {
         setModelScore(BOT_SCORE);
         setModelLabel("BOT");
       } else {
         setModelScore(HUMAN_SCORE);
         setModelLabel("HUMAN");
-        onVerifiedHuman({ score: HUMAN_SCORE }, HUMAN_SCORE);
+        setProofLoading(true);
+        console.log("Proof generated, submitting for validation...");
+        setTimeout(() => {
+          setProofLoading(false);
+          onVerifiedHuman({ score: HUMAN_SCORE }, HUMAN_SCORE);
+        }, 1200);
+        
+        console.log("PROOF GENERATED")
+        
+       
       }
+    } finally {
       setVerifyLoading(false);
-    }, 450);
-    botTimersRef.current.push(timer);
+    }
   }, [solved, verified, selected, puzzle, simulateBot, onVerifiedHuman]);
 
   useEffect(() => {
@@ -335,6 +359,8 @@ export function CaptchaModal({ isOpen, onClose, onVerifiedHuman }: Props) {
           reducedMotion ? "" : "animate-in zoom-in-95 fade-in duration-300"
         }`}
       >
+        {proofLoading && <ProofLoadingOverlay />}
+
         {!simulateBot && (
           <button
             type="button"

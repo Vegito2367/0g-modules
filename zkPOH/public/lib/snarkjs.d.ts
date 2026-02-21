@@ -10,8 +10,8 @@ declare module "snarkjs" {
   export const groth16: {
     fullProve(
       input: Record<string, unknown>,
-      wasmFile: string,
-      zkeyFile: string,
+      wasmFile: string | Uint8Array | ArrayBuffer,
+      zkeyFile: string | Uint8Array | ArrayBuffer,
     ): Promise<{ proof: Groth16Proof; publicSignals: string[] }>;
 
     verify(

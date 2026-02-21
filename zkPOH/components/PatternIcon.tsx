@@ -1,4 +1,4 @@
-import { PatternType } from "@/lib/captchaModel";
+import { PatternType } from "@/components/CaptchaModal";
 
 export function PatternIcon({ type }: { type: PatternType }) {
   const s = 48;
