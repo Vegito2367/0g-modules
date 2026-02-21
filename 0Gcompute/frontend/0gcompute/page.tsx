@@ -84,10 +84,10 @@ export default function ZeroGComputePage() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-12">
-      <h1 className="text-2xl font-bold text-gray-900">
+      <h1 className="text-2xl font-bold text-white">
         0G Compute Network Demo
       </h1>
-      <p className="mt-1 text-sm text-gray-500">
+      <p className="mt-1 text-sm text-gray-400">
         Interactive walkthrough of the 0G compute broker SDK — check ledger
         status, create a ledger, and deposit funds.
       </p>
@@ -128,7 +128,7 @@ export default function ZeroGComputePage() {
           message={depositMsg}
           onAction={depositFund}
         >
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-gray-300">
             Amount (OG)
             <input
               type="number"
@@ -136,15 +136,15 @@ export default function ZeroGComputePage() {
               step="0.1"
               value={depositAmt}
               onChange={(e) => setDepositAmt(e.target.value)}
-              className="w-24 rounded border border-gray-300 px-2 py-1 text-sm"
+              className="w-24 rounded border border-white/20 bg-white/10 px-2 py-1 text-sm text-white"
             />
           </label>
         </StepCard>
       </div>
 
-      <p className="mt-10 text-center text-xs text-gray-400">
+      <p className="mt-10 text-center text-xs text-gray-500">
         Powered by{" "}
-        <code className="text-gray-500">@0glabs/0g-serving-broker</code> on the
+        <code className="text-gray-400">@0glabs/0g-serving-broker</code> on the
         0G testnet
       </p>
     </div>
